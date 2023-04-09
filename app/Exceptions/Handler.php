@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -34,8 +34,27 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if($request->is('api/products/*')){
+                return response()->json([
+                    'status' => false,
+                    'message' => '¡The selected product id is invalid!'
+                ], 404);
+            }
+            if($request->is('api/categories/*')){
+                return response()->json([
+                    'status' => false,
+                    'message' => '¡The selected category id is invalid!'
+                ], 404);
+            }
+            if($request->is('api/providers/*')){
+                return response()->json([
+                    'status' => false,
+                    'message' => '¡The selected provider id is invalid!'
+                ], 404);
+            }
         });
+
+
     }
 }
